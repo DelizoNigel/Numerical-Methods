@@ -1,0 +1,45 @@
+def jacobi_method_verbose_with_substitution(A, b, x_init, iterations=10):
+    n = len(A)
+    x = x_init[:]
+
+    print(f"{'Iter':<5} {'x1':^15} {'x2':^15} {'x3':^15}")
+    print("-" * 50)
+
+    for itr in range(iterations):
+        x_new = x[:]
+        row_output = f"{itr+1:<5}"
+        print(f"\n--- Iteration {itr+1} ---")
+        for i in range(n):
+            sum_ax = 0
+            substitution_parts = []
+            for j in range(n):
+                if j != i:
+                    term = A[i][j] * x[j]
+                    sum_ax += term
+                    substitution_parts.append(f"{A[i][j]}*({x[j]:.6f})")
+
+            result = (b[i] - sum_ax) / A[i][i]
+            equation_str = f"x{i+1} = ( {b[i]} - " + " - ".join(substitution_parts) + f" ) / {A[i][i]}"
+            calc_str = f"x{i+1} = {result:.6f}"
+            print(f"{equation_str}\n    => {calc_str}")
+            x_new[i] = result
+            row_output += f" {result:^15.6f}"
+        print(f"\nValues: {row_output}")
+        print("-" * 50)
+        x = x_new
+
+# Coefficient matrix A
+A = [
+    [3, -1, 1],    # 3x1 - x2 + x3 = 2
+    [2, -3, -1],   # 2x1 - 3x2 - x3 = 7
+    [3, -1, 4]     # 3x1 - x2 + 4x3 = 5
+]
+
+# Right-hand side vector
+b = [2, 7, 5]
+
+# Initial guess
+x_init = [0, 0, 0]
+
+# Run the Jacobi method
+jacobi_method_verbose_with_substitution(A, b, x_init, iterations=10)
